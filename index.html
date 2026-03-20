@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Calculator Using Logic Gates</title>
+    <style>
+        * { margin: 0; 
+            padding: 0;
+             box-sizing: border-box; 
+        }
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-secondary: #161620;
+            --bg-card: #1a1a2e;
+            --neon-green: #00ff88;
+            --neon-blue: #00aaff;
+            --neon-red: #ff0055;
+            --neon-yellow: #ffdd00;
+            --text-light: #e0e0e0;
+            --text-dim: #888;
+            --grid-color: rgba(0, 255, 136, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            background-image:
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            overflow-x: hidden;
+        }
+
+        nav {
+            position: fixed; top: 0; width: 100%;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 2px solid var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto; 
+            padding: 1rem 2rem;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            flex-wrap: wrap;
+        }
+        .nav-logo { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: var(--neon-green); 
+            text-shadow: 0 0 10px var(--neon-green); 
+        }
+        .nav-links { 
+            display: flex; 
+            gap: 2rem; 
+            list-style: none; 
+            flex-wrap: wrap; 
+        }
+        .nav-links a {
+            color: var(--text-light); 
+            text-decoration: none; 
+            transition: all 0.3s; 
+            padding: 0.5rem 1rem; 
+            border-radius: 5px;
+        }
+        .nav-links a:hover { 
+            color: var(--neon-green); 
+            background: rgba(0, 255, 136, 0.1); 
+            text-shadow: 0 0 10px var(--neon-green); 
+        }
+
+        section { 
+            min-height: 100vh; 
+            padding: 100px 2rem 2rem; 
+            max-width: 1400px; 
+            margin: 0 auto; 
+        }
+
+        h1 {
+            font-size: 3rem; 
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-blue));
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        h2 { font-size: 2.5rem; 
+            margin-bottom: 2rem; 
+            color: var(--neon-green); 
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5); 
+        }
+        h3 { font-size: 1.8rem; 
+            margin-bottom: 1rem;
+             color: var(--neon-blue); 
+             text-shadow: 0 0 5px rgba(0, 170, 255, 0.5);
+        }
+
+        p { 
+            margin-bottom: 1rem; 
+            color: var(--text-light); 
+            font-size: 1.1rem; 
+        }
+
+        @keyframes glow {
+            from { 
+                text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); 
+            }
+            to { 
+                text-shadow: 0 0 30px rgba(0, 255, 136, 0.8), 0 0 40px rgba(0, 170, 255, 0.5); 
+            }
+        }
+
+        .hero {
+             text-align: center; 
+             display: flex; 
+             flex-direction: column; 
+             justify-content: center; 
+             align-items: center; 
+             padding: 150px 2rem 2rem;
+        }
+
+        .subtitle { 
+            font-size: 1.5rem; 
+            color: var(--neon-blue); 
+            margin-bottom: 2rem; 
+        }
+
+        .description-box {
+            background: var(--bg-card); 
+            padding: 2rem; 
+            border-radius: 15px;
+            border: 2px solid var(--neon-green); 
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+            max-width: 800px; margin: 2rem auto;
+        }
+
+        .features {
+             display: grid; 
+             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+             gap: 2rem; margin-top: 3rem; 
+        }
+        .feature-card {
+            background: var(--bg-card); 
+            padding: 2rem; 
+            border-radius: 10px;
+            border: 2px solid var(--neon-blue); 
+            transition: all 0.3s; 
+            cursor: pointer;
+        }
+        .feature-card:hover {
+             transform: translateY(-5px); 
+             box-shadow: 0 10px 30px rgba(0, 170, 255, 0.3); 
+             border-color: var(--neon-green); 
+        }
+        .feature-card h3 {
+             font-size: 1.3rem; 
+             margin-bottom: 0.5rem; 
+        }
+
+        .calculator-container {
+            background: var(--bg-card); 
+            padding: 3rem; 
+            border-radius: 20px;
+            border: 3px solid var(--neon-green); 
+            box-shadow: 0 0 50px rgba(0, 4, 2, 0.3);
+            margin: 2rem auto; 
+            max-width: 1000px;
+        }
+
+        .input-section {
+             display: flex; 
+             flex-direction: column; 
+             gap: 2rem; 
+             margin-bottom: 3rem; 
+        }
+
+        .binary-input { 
+            display: flex; 
+            align-items: center; 
+            gap: 3rem; 
+            flex-wrap: wrap; 
+        }
+
+        .input-label {
+             font-size: 1.5rem; 
+             color: var(--neon-green); 
+             font-weight: bold; 
+             min-width: 100px; 
+             font-family: 'Courier New', monospace; 
+        }
+
+        .bit-container { 
+            display: flex; 
+            gap: 2rem; 
+        }
+        .bit-switch {
+            width: 60px; 
+            height: 60px; 
+            background: var(--bg-secondary);
+            border: 3px solid var(--neon-red); 
+            border-radius: 10px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 2rem; 
+            font-weight: bold; 
+            font-family: 'Courier New', monospace;
+            cursor: pointer; 
+            transition: all 0.3s; 
+            color: var(--text-dim); 
+            user-select: none;
+        }
+        .bit-switch:hover { 
+            transform: scale(1.1); 
+            border-color: var(--neon-green); 
+        }
+        .bit-switch.active {
+            background: var(--neon-green); 
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px var(--neon-green); 
+            border-color: var(--neon-green);
+        }
+        .bit-label { 
+            font-size: 0.9rem; 
+            color: var(--text-dim); 
+            text-align: center; 
+            margin-top: 0.5rem; 
+            font-family: 'Courier New', monospace; 
+        }
+
+        .mode-section {
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 2rem;
+            padding: 2rem; 
+            background: var(--bg-secondary); 
+            border-radius: 15px; 
+            margin: 2rem 0;
+        }
+        .mode-label { 
+            font-size: 1.5rem; 
+            color: var(--neon-blue); 
+            font-weight: bold; 
+        }
+        .mode-toggle {
+            width: 100px; 
+            height: 50px; 
+            background: var(--bg-dark);
+            border: 3px solid var(--neon-green); 
+            border-radius: 25px;
+            position: relative; 
+            cursor: pointer; 
+            transition: all 0.3s;
+        }
+        .mode-toggle::after {
+            content: ''; 
+            position: absolute; 
+            width: 40px; 
+            height: 40px;
+            background: var(--neon-green); 
+            border-radius: 50%; 
+            top: 2px; 
+            left: 2px;
+            transition: all 0.3s; 
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+        .mode-toggle.subtract {
+             border-color: var(--neon-red); 
+        }
+        .mode-toggle.subtract::after {
+             left: 52px; 
+             background: var(--neon-red); 
+             box-shadow: 0 0 15px var(--neon-red); 
+        }
+        .mode-display {
+             font-size: 1.5rem; 
+             font-weight: bold; 
+             font-family: 'Courier New', monospace; 
+             min-width: 150px; 
+        }
+        .mode-display.add { 
+            color: var(--neon-green); 
+        }
+
+        .mode-display.subtract { 
+            color: var(--neon-red); 
+        }
+
+        .output-section {
+            background: var(--bg-secondary); 
+            padding: 2rem; 
+            border-radius: 15px;
+            border: 3px solid var(--neon-green); 
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+        }
+        .output-title { 
+            font-size: 1.8rem; 
+            color: var(--neon-green); 
+            margin-bottom: 1.5rem; 
+            text-align: center; 
+        }
+
+        .result-bits {
+             display: flex; 
+             justify-content: center; 
+             gap: 1rem; 
+             margin-bottom: 2rem; 
+        }
+        .result-bit {
+            width: 70px; 
+            height: 70px; 
+            background: var(--bg-dark);
+            border: 3px solid var(--neon-green); 
+            border-radius: 10px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 2.5rem; 
+            font-weight: bold; 
+            font-family: 'Courier New', monospace;
+            color: var(--neon-green); 
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.6); }
+        }
+
+        .output-info { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 1.5rem; 
+            margin-top: 2rem; 
+        }
+
+        .info-item { 
+            background: var(--bg-dark); 
+            padding: 1.5rem; 
+            border-radius: 10px; 
+            border: 2px solid var(--neon-blue); 
+            text-align: center; 
+        }
+        .info-label { 
+            font-size: 1rem; 
+            color: var(--text-dim); 
+            margin-bottom: 0.5rem; 
+        }
+        .info-value { 
+            font-size: 2rem; 
+            font-weight: bold; 
+            font-family: 'Courier New', monospace; 
+            color: var(--neon-blue); 
+        }
+        .info-value.overflow-yes { 
+            color: var(--neon-red); 
+            animation: blink 1s ease-in-out infinite; 
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.3; }
+        }
+
+        .decimal-display {
+            margin-top: 2rem; 
+            padding: 1.5rem; 
+            background: var(--bg-dark);
+            border-radius: 10px; 
+            text-align: left;
+        }
+        .decimal-block {
+            padding: 1rem 1.2rem; 
+            border-radius: 8px; 
+            margin-bottom: 0.8rem;
+            font-family: 'Courier New', monospace; 
+            font-size: 1rem; 
+            line-height: 1.9;
+        }
+        .decimal-block.unsigned-block { 
+            border-left: 4px solid var(--neon-blue); 
+            background: rgba(0,170,255,0.05); 
+        }
+        .decimal-block.signed-block   { 
+            border-left: 4px solid var(--neon-yellow); 
+            background: rgba(255,221,0,0.05); 
+        }
+
+        .block-title { 
+            font-size: 1rem; 
+            font-weight: bold; 
+            margin-bottom: 0.4rem; 
+        }
+
+        .unsigned-block .block-title { 
+            color: var(--neon-blue); 
+        }
+
+        .signed-block   .block-title { 
+            color: var(--neon-yellow); 
+        }
+
+        .block-line { 
+            color: var(--text-light); 
+        }
+
+        .block-result { 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+        }
+
+        .unsigned-block .block-result { 
+            color: var(--neon-green);
+        }
+
+        .signed-block   .block-result { 
+            color: var(--neon-yellow); 
+        }
+
+        .overflow-warning { 
+            color: var(--neon-red); 
+            font-weight: bold; 
+            margin-top: 0.3rem; 
+        }
+
+        .controls { 
+            display: flex; 
+            justify-content: center; 
+            gap: 2rem; 
+            margin-top: 2rem; 
+            flex-wrap: wrap; 
+        }
+
+        .btn {
+            padding: 1rem 2rem; 
+            font-size: 1.1rem; 
+            font-weight: bold;
+            border: 2px solid var(--neon-green); 
+            background: transparent;
+            color: var(--neon-green); 
+            border-radius: 10px; 
+            cursor: pointer;
+            transition: all 0.3s; 
+            font-family: 'Courier New', monospace;
+        }
+        .btn:hover { 
+            background: var(--neon-green); 
+            color: var(--bg-dark); 
+            box-shadow: 0 0 20px var(--neon-green); 
+            transform: translateY(-3px); 
+        }
+        .btn-secondary { 
+            border-color: var(--neon-blue); 
+            color: var(--neon-blue); 
+        }
+        .btn-secondary:hover { 
+            background: var(--neon-blue); 
+            box-shadow: 0 0 20px var(--neon-blue); 
+        }
+
+        .calculation-steps {
+            margin-top: 3rem; 
+            background: var(--bg-secondary); 
+            padding: 2rem;
+            border-radius: 15px; 
+            border: 2px solid var(--neon-blue);
+        }
+
+        .steps-tabs { display: flex; 
+            gap: 1rem; 
+            margin-bottom: 1.5rem; 
+        }
+
+        .tab-btn {
+            padding: 0.6rem 1.5rem; 
+            border-radius: 8px; 
+            cursor: pointer;
+            font-family: 'Courier New', monospace; 
+            font-size: 1rem; 
+            font-weight: bold;
+            border: 2px solid; 
+            transition: all 0.3s; 
+            background: transparent;
+        }
+        .tab-btn.unsigned-tab { 
+            border-color: var(--neon-blue); 
+            color: var(--neon-blue); 
+        }
+        .tab-btn.unsigned-tab.active, .tab-btn.unsigned-tab:hover { 
+            background: var(--neon-blue); 
+            color: var(--bg-dark); 
+        }
+        .tab-btn.signed-tab { 
+            border-color: var(--neon-yellow); 
+            color: var(--neon-yellow); 
+        }
+        .tab-btn.signed-tab.active, .tab-btn.signed-tab:hover { 
+            background: var(--neon-yellow); 
+            color: var(--bg-dark); 
+        }
+
+        .steps-panel { 
+            display: none; 
+        }
+        .steps-panel.active { 
+            display: block; 
+        }
+        .step {
+            background: var(--bg-dark); 
+            padding: 1rem; 
+            margin-bottom: 1rem;
+            border-radius: 8px; 
+            border-left: 4px solid var(--neon-green);
+        }
+        .step.signed-step { 
+            border-left-color: var(--neon-yellow); 
+        }
+        .step h4 { 
+            color: var(--neon-green); 
+            margin-bottom: 0.5rem; 
+        }
+        .step.signed-step h4 { 
+            color: var(--neon-yellow); 
+        }
+        .step p { 
+            font-family: 'Courier New', monospace; 
+            color: var(--text-light); 
+            margin: 0; 
+        }
+
+        .circuit-container {
+            background: var(--bg-card); 
+            padding: 2rem; 
+            border-radius: 15px;
+            border: 3px solid var(--neon-blue); 
+            margin: 2rem 0; 
+            overflow-x: auto;
+        }
+
+        #circuit-svg { 
+            width: 100%; 
+            min-height: 600px; 
+            background: var(--bg-secondary); 
+            border-radius: 10px; 
+        }
+
+        .edu-section { 
+            background: var(--bg-card); 
+            padding: 2rem; 
+            border-radius: 15px; 
+            border: 2px solid var(--neon-green); 
+            margin: 2rem 0; 
+        }
+        .edu-section h3 { 
+            color: var(--neon-green); 
+            margin-bottom: 1rem; 
+        }
+        .edu-section ul { 
+            list-style: none;
+            padding-left: 0; 
+        }
+        .edu-section li { 
+            padding: 0.5rem 0; 
+            padding-left: 1.5rem; 
+            position: relative; 
+        }
+        .edu-section li::before { 
+            content: '▸'; 
+            position: absolute; 
+            left: 0; 
+            color: var(--neon-green); 
+        }
+
+        .code-example {
+            background: var(--bg-dark); 
+            padding: 1.5rem; 
+            border-radius: 10px;
+            border-left: 4px solid var(--neon-green); 
+            font-family: 'Courier New', monospace;
+            overflow-x: auto; 
+            margin: 1rem 0;
+        }
+
+        .test-cases-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 1.5rem; 
+            margin-top: 2rem; 
+        }
+        .test-case-card {
+            background: var(--bg-card); 
+            padding: 1.5rem; 
+            border-radius: 10px;
+            border: 2px solid var(--neon-blue); 
+            transition: all 0.3s; 
+            cursor: pointer;
+        }
+        .test-case-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 10px 30px rgba(0, 170, 255, 0.3); 
+            border-color: var(--neon-green); 
+        }
+        .test-case-card h4 { 
+            color: var(--neon-green); 
+            margin-bottom: 1rem; 
+        }
+        .test-case-info { 
+            font-family: 'Courier New', monospace; 
+            line-height: 1.8; 
+        }
+        .test-case-info span { 
+            color: var(--neon-blue); 
+            font-weight: bold; 
+        }
+        .test-case-info .signed-info { 
+            color: var(--neon-yellow); 
+        }
+
+        footer { 
+            background: var(--bg-secondary); 
+            padding: 2rem; 
+            text-align: center; 
+            border-top: 2px solid var(--neon-green); 
+            margin-top: 4rem; 
+        }
+        footer p { 
+            margin: 0; 
+            color: var(--text-dim); 
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.8rem; }
+            .nav-links { gap: 1rem; font-size: 0.9rem; }
+            .calculator-container { padding: 1.5rem; }
+            .bit-switch { width: 50px; height: 50px; font-size: 1.5rem; }
+            .result-bit { width: 55px; height: 55px; font-size: 2rem; }
+            section { padding: 80px 1rem 1rem; }
+            .features { grid-template-columns: 1fr; }
+        }
+
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-logo">Binary Calculator</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#calculator">Calculator</a></li>
+                <li><a href="#circuit">Circuit</a></li>
+                <li><a href="#test-cases">Test Cases</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <h1>Binary Calculator Using Logic Gates</h1>
+        <p class="subtitle">A 4-bit Adder & Subtractor Circuit Simulator</p>
+
+        <div class="description-box">
+            <h3>Project Overview</h3>
+            <p>This web application simulates a 4-bit binary calculator that performs addition and subtraction using logic gates, showing results in both <strong style="color:var(--neon-blue)">unsigned</strong> (0–15) and <strong style="color:var(--neon-yellow)">signed 2's complement</strong> (−8 to +7) interpretations.</p>
+            <p>The calculator demonstrates fundamental concepts of digital electronics, including full adders, XOR gates for conditional inversion, carry propagation, and overflow detection.</p>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>4-Bit Operations</h3>
+                <p>Perform addition and subtraction on 4-bit binary numbers with visual feedback and real-time calculation.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Logic Gate Simulation</h3>
+                <p>Accurate implementation of XOR gates, full adders, and carry propagation logic.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Dual Interpretation</h3>
+                <p>See results in both unsigned (0–15) and signed 2's complement (−8 to +7) with full step-by-step working.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Interactive Design</h3>
+                <p>Modern dark theme with glowing digital aesthetics and responsive design for all devices.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="calculator">
+        <h2>Binary Calculator Simulator</h2>
+
+        <div class="calculator-container">
+            <div class="input-section">
+                <div class="binary-input">
+                    <div class="input-label">Input A:</div>
+                    <div class="bit-container">
+                        <div><div class="bit-switch" id="a0" onclick="toggleBit('a', 0)">0</div></div>
+                        <div><div class="bit-switch" id="a1" onclick="toggleBit('a', 1)">0</div></div>
+                        <div><div class="bit-switch" id="a2" onclick="toggleBit('a', 2)">0</div></div>
+                        <div><div class="bit-switch" id="a3" onclick="toggleBit('a', 3)">0</div></div>
+                    </div>
+                </div>
+                <div class="binary-input">
+                    <div class="input-label">Input B:</div>
+                    <div class="bit-container">
+                        <div><div class="bit-switch" id="b0" onclick="toggleBit('b', 0)">0</div></div>
+                        <div><div class="bit-switch" id="b1" onclick="toggleBit('b', 1)">0</div></div>
+                        <div><div class="bit-switch" id="b2" onclick="toggleBit('b', 2)">0</div></div>
+                        <div><div class="bit-switch" id="b3" onclick="toggleBit('b', 3)">0</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mode-section">
+                <div class="mode-label">Operation Mode:</div>
+                <div class="mode-toggle" id="mode-toggle" onclick="toggleMode()"></div>
+                <div class="mode-display add" id="mode-display">Addition (0)</div>
+            </div>
+
+            <div class="output-section">
+                <div class="output-title">Result</div>
+
+                <div class="result-bits">
+                    <div><div class="result-bit" id="s0">0</div><div class="bit-label">8</div></div>
+                    <div><div class="result-bit" id="s1">0</div><div class="bit-label">4</div></div>
+                    <div><div class="result-bit" id="s2">0</div><div class="bit-label">2</div></div>
+                    <div><div class="result-bit" id="s3">0</div><div class="bit-label">1</div></div>
+                </div>
+
+                <div class="output-info">
+                    <div class="info-item">
+                        <div class="info-label">Carry Out</div>
+                        <div class="info-value" id="carry-out">0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Overflow</div>
+                        <div class="info-value" id="overflow">NO</div>
+                    </div>
+                </div>
+
+                <div class="decimal-display" id="decimal-result">
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" onclick="resetCalculator()">Reset</button>
+                <button class="btn btn-secondary" id="steps-btn" onclick="toggleSteps()">Show Steps</button>
+            </div>
+
+            <div class="calculation-steps" id="calc-steps" style="display: none;">
+                <h3>Step-by-Step Calculation</h3>
+                <div class="steps-tabs">
+                    <button class="tab-btn unsigned-tab active" onclick="switchTab('unsigned')">Unsigned Steps</button>
+                    <button class="tab-btn signed-tab" onclick="switchTab('signed')">Signed Steps</button>
+                </div>
+                <div class="steps-panel active" id="unsigned-panel"></div>
+                <div class="steps-panel" id="signed-panel"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="circuit">
+        <h2>Circuit Diagram & Explanation</h2>
+
+        <div class="circuit-container">
+            <svg id="circuit-svg" viewBox="0 0 1000 600"></svg>
+        </div>
+
+        <div class="edu-section">
+            <h3>How It Works</h3>
+            <p>The 4-bit adder-subtractor circuit uses the following components and logic. The hardware itself is the same for both unsigned and signed arithmetic — only how you <em>interpret</em> the bits changes.</p>
+
+            <div style="margin-top:2rem">
+                <h4 style="color:var(--neon-green)">1. XOR Gates for Conditional Inversion</h4>
+                <p>Each bit of input B passes through an XOR gate with the Mode signal:</p>
+                <div class="code-example">B'[i] = B[i] XOR Mode
+- Mode = 0 (Addition):    B'[i] = B[i]         (B unchanged)
+- Mode = 1 (Subtraction): B'[i] = NOT B[i]      (1's complement)</div>
+            </div>
+
+            <div style="margin-top:2rem">
+                <h4 style="color:var(--neon-green)">2. Full Adder Logic</h4>
+                <div class="code-example">Sum[i]       = A[i] XOR B'[i] XOR Carry_in[i]
+Carry_out[i] = (A[i] AND B'[i]) OR (Carry_in[i] AND (A[i] XOR B'[i]))</div>
+            </div>
+
+            <div style="margin-top:2rem">
+                <h4 style="color:var(--neon-green)">3. 2's Complement for Subtraction</h4>
+                <div class="code-example">Step 1: Invert B → 1's complement  (via XOR gates with Mode=1)
+Step 2: Add 1 via initial Carry_in = Mode = 1
+Result: A + (2's complement of B) = A − B</div>
+            </div>
+
+            <div style="margin-top:2rem">
+                <h4 style="color:var(--neon-green)">4. Unsigned vs Signed Interpretation</h4>
+                <div class="code-example">Unsigned: treat all 4 bits as a positive value → range 0 to 15
+  1000 = 8,  1001 = 9,  1111 = 15
+
+Signed (2's complement): MSB has weight −8 → range −8 to +7
+  1000 = −8,  1001 = −7,  1111 = −1
+  Formula: if MSB=1 → signed value = unsigned value − 16
+
+The circuit hardware is IDENTICAL for both.
+Only the decimal interpretation of the output bits differs.</div>
+            </div>
+
+            <div style="margin-top:2rem">
+                <h4 style="color:var(--neon-green)">5. Overflow Detection (Signed)</h4>
+                <div class="code-example">Overflow = Carry_in[MSB] XOR Carry_out[MSB]
+- Only meaningful for signed interpretation
+- Indicates result exceeds signed range [−8, +7]
+- Unsigned arithmetic does not overflow (carry out handles it)</div>
+            </div>
+        </div>
+
+        <div class="edu-section">
+            <h3>Binary Arithmetic Fundamentals</h3>
+
+            <div style="margin-top:1.5rem">
+                <h4 style="color:var(--neon-blue)">Binary Addition Rules</h4>
+                <div class="code-example">0+0=0 (carry 0) | 0+1=1 (carry 0)
+1+0=1 (carry 0) | 1+1=0 (carry 1)
+1+1+1=1 (carry 1)  [with carry in]
+
+Example: 5 + 3 = 8
+  0101  (5)
++ 0011  (3)
+------
+  1000  (8 unsigned / −8 signed)</div>
+            </div>
+
+            <div style="margin-top:1.5rem">
+                <h4 style="color:var(--neon-blue)">2's Complement Conversion</h4>
+                <div class="code-example">To find signed value when MSB = 1:
+  signed = unsigned − 16
+
+Example: 1011
+  unsigned = 11
+  signed   = 11 − 16 = −5
+
+To negate a number:
+  1. Invert all bits (1's complement)
+  2. Add 1
+  Example: −3 → 0011 → invert → 1100 → +1 → 1101 = −3 ✓</div>
+            </div>
+
+            <div style="margin-top:1.5rem">
+                <h4 style="color:var(--neon-blue)">Subtraction Example (both views)</h4>
+                <div class="code-example">7 − 3:
+  A = 0111 (7 unsigned / 7 signed)
+  B = 0011 (3 unsigned / 3 signed)
+  B inverted + carry = 1101 (2's complement of 3 = −3)
+  0111 + 1101 = [1]0100  (carry discarded)
+  Result = 0100
+
+  Unsigned: 0100 = 4  ✓  (7−3=4)
+  Signed:   0100 = 4  ✓  (7−3=4)</div>
+            </div>
+
+            <div style="margin-top:1.5rem">
+                <h4 style="color:var(--neon-blue)">Overflow Example</h4>
+                <div class="code-example">7 + 2 (signed overflow):
+  0111 (7) + 0010 (2) = 1001
+  Unsigned: 1001 = 9   ✓ (no overflow in unsigned)
+  Signed:   1001 = −7  ✗ (overflow! 7+2 should be 9, not −7)
+  Overflow flag = 1 (carry_in[MSB]=0 ≠ carry_out[MSB]=1)</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="test-cases">
+        <h2>Test Case Examples</h2>
+        <p>Click on any test case to load it into the calculator:</p>
+
+        <div class="test-cases-grid">
+            <div class="test-case-card" onclick="loadTestCase(0)">
+                <h4>Test 1: Simple Addition</h4>
+                <div class="test-case-info">
+                    <p><span>A:</span> 0011 | Unsigned: 3 | <span class="signed-info">Signed: 3</span></p>
+                    <p><span>B:</span> 0010 | Unsigned: 2 | <span class="signed-info">Signed: 2</span></p>
+                    <p><span>Mode:</span> Addition</p>
+                    <p><span>Result:</span> 0101 | Unsigned: 5 | <span class="signed-info">Signed: 5</span></p>
+                    <p><span>Carry:</span> 0 | <span>Overflow:</span> NO</p>
+                </div>
+            </div>
+
+            <div class="test-case-card" onclick="loadTestCase(1)">
+                <h4>Test 2: MSB Set Inputs</h4>
+                <div class="test-case-info">
+                    <p><span>A:</span> 1001 | Unsigned: 9 | <span class="signed-info">Signed: −7</span></p>
+                    <p><span>B:</span> 0110 | Unsigned: 6 | <span class="signed-info">Signed: 6</span></p>
+                    <p><span>Mode:</span> Addition</p>
+                    <p><span>Result:</span> 1111 | Unsigned: 15 | <span class="signed-info">Signed: −1</span></p>
+                    <p><span>Carry:</span> 0 | <span>Overflow:</span> NO (−7+6=−1 ✓)</p>
+                </div>
+            </div>
+
+            <div class="test-case-card" onclick="loadTestCase(2)">
+                <h4>Test 3: Simple Subtraction</h4>
+                <div class="test-case-info">
+                    <p><span>A:</span> 0111 | Unsigned: 7 | <span class="signed-info">Signed: 7</span></p>
+                    <p><span>B:</span> 0011 | Unsigned: 3 | <span class="signed-info">Signed: 3</span></p>
+                    <p><span>Mode:</span> Subtraction</p>
+                    <p><span>Result:</span> 0100 | Unsigned: 4 | <span class="signed-info">Signed: 4</span></p>
+                    <p><span>Carry:</span> 1 | <span>Overflow:</span> NO</p>
+                </div>
+            </div>
+
+            <div class="test-case-card" onclick="loadTestCase(3)">
+                <h4>Test 4: Subtraction with Borrow</h4>
+                <div class="test-case-info">
+                    <p><span>A:</span> 0011 | Unsigned: 3 | <span class="signed-info">Signed: 3</span></p>
+                    <p><span>B:</span> 0101 | Unsigned: 5 | <span class="signed-info">Signed: 5</span></p>
+                    <p><span>Mode:</span> Subtraction</p>
+                    <p><span>Result:</span> 1110 | Unsigned: 14 | <span class="signed-info">Signed: −2</span></p>
+                    <p><span>Carry:</span> 0 (borrow) | <span>Overflow:</span> NO</p>
+                </div>
+            </div>
+
+            <div class="test-case-card" onclick="loadTestCase(4)">
+                <h4>Test 5: Signed Overflow </h4>
+                <div class="test-case-info">
+                    <p><span>A:</span> 0111 | Unsigned: 7 | <span class="signed-info">Signed: 7</span></p>
+                    <p><span>B:</span> 0010 | Unsigned: 2 | <span class="signed-info">Signed: 2</span></p>
+                    <p><span>Mode:</span> Addition</p>
+                    <p><span>Result:</span> 1001 | Unsigned: 9 ✓ | <span class="signed-info">Signed: −7 ✗</span></p>
+                    <p><span>Carry:</span> 0 | <span>Overflow:</span> <span style="color:var(--neon-red)">YES (signed only)</span></p>
+                </div>
+            </div>
+
+            <div class="test-case-card" onclick="loadTestCase(5)">
+                <h4>Test 6: Zero Result</h4>
+                <div class="test-case-info">
+                    <p><span>A:</span> 0101 | Unsigned: 5 | <span class="signed-info">Signed: 5</span></p>
+                    <p><span>B:</span> 0101 | Unsigned: 5 | <span class="signed-info">Signed: 5</span></p>
+                    <p><span>Mode:</span> Subtraction</p>
+                    <p><span>Result:</span> 0000 | Unsigned: 0 | <span class="signed-info">Signed: 0</span></p>
+                    <p><span>Carry:</span> 1 | <span>Overflow:</span> NO</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="conclusion">
+        <h2>Conclusion</h2>
+
+        <div class="edu-section">
+            <h3>Project Summary</h3>
+            <p>This Binary Calculator demonstrates the fundamental principles of digital logic circuits used in modern computers. The same 4-bit adder-subtractor hardware produces a result that can be interpreted in two ways — unsigned (0–15) or signed 2's complement (−8 to +7) — depending on the context.</p>
+        </div>
+
+        <div class="edu-section">
+            <h3>Key Learning Outcomes</h3>
+            <ul>
+                <li>Understanding of binary number representation and arithmetic operations</li>
+                <li>Implementation of full adder circuits and carry propagation</li>
+                <li>XOR gate usage for conditional bit inversion</li>
+                <li>2's complement method for subtraction in digital circuits</li>
+                <li>Difference between unsigned and signed interpretation of binary results</li>
+                <li>Overflow detection applies to signed arithmetic; carry out handles unsigned range</li>
+                <li>Practical application of Boolean algebra and logic gates</li>
+            </ul>
+        </div>
+
+        <div class="edu-section">
+            <h3>Real-World Applications</h3>
+            <ul>
+                <li><strong>Arithmetic Logic Units (ALU):</strong> CPUs use identical hardware for signed and unsigned ops — compiler/programmer chooses interpretation</li>
+                <li><strong>Digital Signal Processing:</strong> Binary arithmetic is fundamental to audio/video processing chips</li>
+                <li><strong>Embedded Systems:</strong> Microcontrollers use hardware adders for efficient computation</li>
+                <li><strong>Computer Architecture:</strong> Understanding these circuits is essential for processor design</li>
+            </ul>
+        </div>
+
+        <div class="description-box" style="margin-top:3rem">
+            <h3>Educational Value</h3>
+            <p>This project serves as an excellent resource for students learning:</p>
+            <ul>
+                <li>Computer Organization and Architecture</li>
+                <li>Digital Electronics and Logic Design</li>
+                <li>Embedded Systems Programming</li>
+                <li>Computer Engineering Fundamentals</li>
+            </ul>
+            <p style="margin-top:1.5rem; text-align:center; color:var(--neon-green); font-weight:bold;">
+                By interacting with this simulator, you gain hands-on experience with the building blocks of modern computing!
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <p>Binary Calculator Using Logic Gates | Project Based Learning | Computer Organization and Architecture</p>
+        <p style="margin-top:0.5rem;">© 2026 | Built with HTML, CSS, and JavaScript</p>
+    </footer>
+
+    <script>
+        let inputA = [0,0,0,0];
+        let inputB = [0,0,0,0];
+        let mode = 0;
+        let showStepsFlag = false;
+        let activeTab = 'unsigned';
+
+        const testCases = [
+            { a:[0,0,1,1], b:[0,0,1,0], mode:0 },
+            { a:[1,0,0,1], b:[0,1,1,0], mode:0 },
+            { a:[0,1,1,1], b:[0,0,1,1], mode:1 },
+            { a:[0,0,1,1], b:[0,1,0,1], mode:1 },
+            { a:[0,1,1,1], b:[0,0,1,0], mode:0 },
+            { a:[0,1,0,1], b:[0,1,0,1], mode:1 }
+        ];
+
+        function toggleBit(input, position) {
+            const bitId = input + position;
+            const bitElement = document.getElementById(bitId);
+            if (input === 'a') {
+                inputA[position] = inputA[position] === 0 ? 1 : 0;
+                bitElement.textContent = inputA[position];
+            } else {
+                inputB[position] = inputB[position] === 0 ? 1 : 0;
+                bitElement.textContent = inputB[position];
+            }
+            bitElement.classList.toggle('active');
+            calculate();
+        }
+
+        function toggleMode() {
+            mode = mode === 0 ? 1 : 0;
+            const toggle = document.getElementById('mode-toggle');
+            const display = document.getElementById('mode-display');
+            if (mode === 1) {
+                toggle.classList.add('subtract');
+                display.textContent = 'Subtraction (1)';
+                display.className = 'mode-display subtract';
+            } else {
+                toggle.classList.remove('subtract');
+                display.textContent = 'Addition (0)';
+                display.className = 'mode-display add';
+            }
+            calculate();
+        }
+
+        function fullAdder(a, b, carryIn) {
+            const sum = a ^ b ^ carryIn;
+            const carryOut = (a & b) | (carryIn & (a ^ b));
+            return { sum, carryOut };
+        }
+
+        function binaryToDecimal(binary) {
+            return parseInt(binary.join(''), 2);
+        }
+
+        function binaryToSignedDecimal(binary) {
+            const unsigned = binaryToDecimal(binary);
+            if (binary[0] === 1) return unsigned - 16;
+            return unsigned;
+        }
+
+        function signedLabel(binary) {
+            const u = binaryToDecimal(binary);
+            const s = binaryToSignedDecimal(binary);
+            if (binary[0] === 1) return `${u} − 16 = ${s}`;
+            return `${s}`;
+        }
+
+        function calculate() {
+            const operation = mode === 0 ? '+' : '−';
+
+            let bPrime = inputB.map(bit => bit ^ mode);
+            let result = [0,0,0,0];
+            let carries = [mode];
+
+            for (let i = 3; i >= 0; i--) {
+                const fa = fullAdder(inputA[i], bPrime[i], carries[3-i]);
+                result[i] = fa.sum;
+                carries[4-i] = fa.carryOut;
+            }
+
+            const carryIntoMSB  = carries[3];
+            const carryOutOfMSB = carries[4];
+            const overflow       = carryIntoMSB ^ carryOutOfMSB;
+
+            updateOutput(result, carryOutOfMSB, overflow);
+
+            const uA = binaryToDecimal(inputA);
+            const uB = binaryToDecimal(inputB);
+            const uR = binaryToDecimal(result);
+            const sA = binaryToSignedDecimal(inputA);
+            const sB = binaryToSignedDecimal(inputB);
+            const sR = binaryToSignedDecimal(result);
+
+            const trueAnswer = mode === 0 ? sA + sB : sA - sB;
+
+            const decDiv = document.getElementById('decimal-result');
+            decDiv.innerHTML = `
+                <div class="decimal-block unsigned-block">
+                    <div class="block-title">Unsigned Interpretation (0 to 15)</div>
+                    <div class="block-line">A = ${inputA.join('')} → ${uA}</div>
+                    <div class="block-line">B = ${inputB.join('')} → ${uB}</div>
+                    <div class="block-line">Result = ${result.join('')} → ${uR}</div>
+                    <div class="block-result">${uA} ${operation} ${uB} = ${uR} (unsigned)</div>
+                </div>
+                <div class="decimal-block signed-block">
+                    <div class="block-title">Signed Interpretation, 2's Complement (−8 to +7)</div>
+                    <div class="block-line">A = ${inputA.join('')} → ${signedLabel(inputA)}</div>
+                    <div class="block-line">B = ${inputB.join('')} → ${signedLabel(inputB)}</div>
+                    <div class="block-line">Result = ${result.join('')} → ${signedLabel(result)}</div>
+                    ${overflow
+                        ? `<div class="block-result" style="color:var(--neon-red)">True answer: ${sA} ${operation} ${sB} = ${trueAnswer}</div>
+                           <div class="block-line" style="color:var(--neon-red)">Circuit outputs: ${sR} (wrapped due to overflow)</div>
+                           <div class="overflow-warning"> ${trueAnswer} is outside signed range [−8, +7], result wraps to ${sR}</div>`
+                        : `<div class="block-result">${sA} ${operation} ${sB} = ${sR} (signed)</div>`
+                    }
+                </div>`;
+
+            if (showStepsFlag) {
+                buildUnsignedSteps(inputA, inputB, bPrime, result, carries, carryIntoMSB, carryOutOfMSB, overflow);
+                buildSignedSteps(inputA, inputB, bPrime, result, carries, carryIntoMSB, carryOutOfMSB, overflow);
+            }
+        }
+
+        function buildUnsignedSteps(A, B, bPrime, result, carries, cInMSB, cOutMSB, overflow) {
+            const panel = document.getElementById('unsigned-panel');
+            const op = mode === 0 ? '+' : '−';
+            const uA = binaryToDecimal(A);
+            const uB = binaryToDecimal(B);
+            const uR = binaryToDecimal(result);
+
+            const steps = [
+                {
+                    title: "Initial Inputs (Unsigned)",
+                    content: `A = ${A.join('')}  →  decimal ${uA}\nB = ${B.join('')}  →  decimal ${uB}\nMode = ${mode} (${mode===0?'Addition':'Subtraction'})\nRange: 0 to 15`
+                },
+                {
+                    title: "Step 1: Conditional Inversion of B",
+                    content: `B'[i] = B[i] XOR ${mode}\nB  = ${B.join('')}\nB' = ${bPrime.join('')}${mode===1?" (1's complement of B)":" (B unchanged, mode=0)"}`
+                },
+                {
+                    title: "Step 2: Ripple Carry Addition",
+                    content: `Initial Carry (C0) = ${mode}${mode===1?" (will add 1 to complete 2's complement)":""}`
+                }
+            ];
+
+            for (let i = 3; i >= 0; i--) {
+                const ci = carries[3-i];
+                const co = carries[4-i];
+                const s  = result[i];
+                steps.push({
+                    title: `Bit ${i} — Full Adder ${3-i}`,
+                    content: `A[${i}] = ${A[i]},  B'[${i}] = ${bPrime[i]},  Carry_in = ${ci}\nSum[${i}]      = ${A[i]} XOR ${bPrime[i]} XOR ${ci} = ${s}\nCarry_out[${i}] = ${co}`
+                });
+            }
+
+            steps.push({
+                title: "Step 3: Unsigned Result",
+                content: `Result bits = ${result.join('')}\nDecimal     = ${uR}\n\nUnsigned equation: ${uA} ${op} ${uB} = ${uR}${mode===1 && cOutMSB===0 ? ' (wraps mod 16 due to borrow)' : ''}\nCarry out = ${cOutMSB}${
+                    mode === 0
+                        ? (cOutMSB===1 ? " (result exceeded 15, carry out = 1)" : "")
+                        : (cOutMSB===0 ? " (borrow occurred — A < B, result wraps)" : " (no borrow — A ≥ B)")
+                }`
+            });
+
+            renderSteps('unsigned-panel', steps, false);
+        }
+
+        function buildSignedSteps(A, B, bPrime, result, carries, cInMSB, cOutMSB, overflow) {
+            const op = mode === 0 ? '+' : '−';
+            const uA = binaryToDecimal(A),    sA = binaryToSignedDecimal(A);
+            const uB = binaryToDecimal(B),    sB = binaryToSignedDecimal(B);
+            const uR = binaryToDecimal(result), sR = binaryToSignedDecimal(result);
+
+            const signedConvert = (bin, u, s) =>
+                bin[0]===1 ? `${bin.join('')} → ${u} − 16 = ${s}` : `${bin.join('')} → ${s}`;
+
+            const steps = [
+                {
+                    title: "Initial Inputs (Signed 2's Complement)",
+                    content: `A: ${signedConvert(A, uA, sA)}\nB: ${signedConvert(B, uB, sB)}\nMode = ${mode} (${mode===0?'Addition':'Subtraction'})\nSigned range: −8 to +7\nMSB weight = −8 (not +8)`
+                },
+                {
+                    title: "Step 1: Conditional Inversion of B",
+                    content: `B'[i] = B[i] XOR ${mode}\nB  = ${B.join('')}${mode===1?`\n1's complement of B = ${bPrime.join('')}\n(Next step adds 1 via carry to get 2's complement = −B)`:"\nB' = B (unchanged, mode=0)"}`
+                },
+                {
+                    title: "Step 2: Ripple Carry Addition",
+                    content: `Initial Carry (C0) = ${mode}${mode===1?"\nThis +1 completes the 2's complement: 1's comp + 1 = −B":""}`
+                }
+            ];
+
+            for (let i = 3; i >= 0; i--) {
+                const ci = carries[3-i];
+                const co = carries[4-i];
+                const s  = result[i];
+                steps.push({
+                    title: `Bit ${i} — Full Adder ${3-i}`,
+                    content: `A[${i}] = ${A[i]},  B'[${i}] = ${bPrime[i]},  Carry_in = ${ci}\nSum[${i}]      = ${A[i]} XOR ${bPrime[i]} XOR ${ci} = ${s}\nCarry_out[${i}] = ${co}`
+                });
+            }
+
+            steps.push({
+                title: "Step 3: Overflow Detection",
+                content: `Carry into MSB  (C3) = ${cInMSB}\nCarry out of MSB (C4) = ${cOutMSB}\nOverflow = C3 XOR C4 = ${cInMSB} XOR ${cOutMSB} = ${overflow}\n${overflow?" OVERFLOW — result wraps around signed range!":"✓ No overflow"}`
+            });
+
+            const trueAnswer = mode === 0 ? sA + sB : sA - sB;
+            steps.push({
+                title: "Step 4: Signed Result",
+                content: overflow
+                    ? `Result bits = ${result.join('')}\n${signedConvert(result, uR, sR)}\n\nTrue answer  : ${sA} ${op} ${sB} = ${trueAnswer}\nCircuit got  : ${sR}  (wrapped due to overflow)\n ${trueAnswer} is outside signed range [−8, +7]\n   The result wraps around to ${sR} — this is incorrect for signed arithmetic.`
+                    : `Result bits = ${result.join('')}\n${signedConvert(result, uR, sR)}\n\nSigned equation: ${sA} ${op} ${sB} = ${sR} ✓\n✓ Result fits within signed range [−8, +7]`
+            });
+
+            renderSteps('signed-panel', steps, true);
+        }
+
+        function renderSteps(panelId, steps, isSigned) {
+            const panel = document.getElementById(panelId);
+            panel.innerHTML = '';
+            steps.forEach(step => {
+                const div = document.createElement('div');
+                div.className = 'step' + (isSigned ? ' signed-step' : '');
+                div.innerHTML = `<h4>${step.title}</h4><p>${step.content.replace(/\n/g,'<br>')}</p>`;
+                panel.appendChild(div);
+            });
+        }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.steps-panel').forEach(p => p.classList.remove('active'));
+            document.querySelector(`.${tab}-tab`).classList.add('active');
+            document.getElementById(`${tab}-panel`).classList.add('active');
+        }
+
+        function updateOutput(result, carryOut, overflow) {
+            for (let i = 0; i <= 3; i++) {
+                document.getElementById('s' + i).textContent = result[i];
+            }
+            document.getElementById('carry-out').textContent = carryOut;
+            const oe = document.getElementById('overflow');
+            oe.textContent = overflow ? 'YES' : 'NO';
+            overflow ? oe.classList.add('overflow-yes') : oe.classList.remove('overflow-yes');
+        }
+
+        function toggleSteps() {
+            showStepsFlag = !showStepsFlag;
+            const stepsDiv = document.getElementById('calc-steps');
+            const btn = document.getElementById('steps-btn');
+            if (showStepsFlag) {
+                stepsDiv.style.display = 'block';
+                btn.textContent = 'Hide Steps';
+                calculate();
+            } else {
+                stepsDiv.style.display = 'none';
+                btn.textContent = 'Show Steps';
+            }
+        }
+
+        function resetCalculator() {
+            inputA = [0,0,0,0]; inputB = [0,0,0,0]; mode = 0;
+            for (let i = 0; i <= 3; i++) {
+                const a = document.getElementById('a'+i);
+                const b = document.getElementById('b'+i);
+                a.textContent = '0'; b.textContent = '0';
+                a.classList.remove('active'); b.classList.remove('active');
+            }
+            document.getElementById('mode-toggle').classList.remove('subtract');
+            document.getElementById('mode-display').textContent = 'Addition (0)';
+            document.getElementById('mode-display').className = 'mode-display add';
+            calculate();
+        }
+
+        function loadTestCase(index) {
+            const tc = testCases[index];
+            inputA = [...tc.a]; inputB = [...tc.b]; mode = tc.mode;
+            for (let i = 0; i <= 3; i++) {
+                const a = document.getElementById('a'+i);
+                a.textContent = inputA[i];
+                inputA[i]===1 ? a.classList.add('active') : a.classList.remove('active');
+            }
+            for (let i = 0; i <= 3; i++) {
+                const b = document.getElementById('b'+i);
+                b.textContent = inputB[i];
+                inputB[i]===1 ? b.classList.add('active') : b.classList.remove('active');
+            }
+            const toggle = document.getElementById('mode-toggle');
+            const display = document.getElementById('mode-display');
+            if (mode===1) {
+                toggle.classList.add('subtract');
+                display.textContent = 'Subtraction (1)';
+                display.className = 'mode-display subtract';
+            } else {
+                toggle.classList.remove('subtract');
+                display.textContent = 'Addition (0)';
+                display.className = 'mode-display add';
+            }
+            document.getElementById('calculator').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => calculate(), 500);
+        }
+
+        function drawCircuit() {
+            const svg = document.getElementById('circuit-svg');
+            const svgNS = "http://www.w3.org/2000/svg";
+            svg.innerHTML = '';
+            const lineColor = '#00ff88', gateColor = '#00aaff', textColor = '#e0e0e0';
+
+            function createText(x,y,text,color=textColor,size='14') {
+                const el = document.createElementNS(svgNS,'text');
+                el.setAttribute('x',x); el.setAttribute('y',y);
+                el.setAttribute('fill',color); el.setAttribute('font-size',size);
+                el.setAttribute('font-family','Courier New, monospace');
+                el.textContent = text; return el;
+            }
+
+            function createLine(x1,y1,x2,y2,color=lineColor) {
+                const l = document.createElementNS(svgNS,'line');
+                l.setAttribute('x1',x1); l.setAttribute('y1',y1);
+                l.setAttribute('x2',x2); l.setAttribute('y2',y2);
+                l.setAttribute('stroke',color); l.setAttribute('stroke-width','2'); return l;
+            }
+
+            function createXORGate(x,y) {
+                const g = document.createElementNS(svgNS,'g');
+                const r = document.createElementNS(svgNS,'rect');
+                r.setAttribute('x',x); r.setAttribute('y',y);
+                r.setAttribute('width','50'); r.setAttribute('height','40');
+                r.setAttribute('fill','none'); r.setAttribute('stroke',gateColor);
+                r.setAttribute('stroke-width','2'); r.setAttribute('rx','5');
+                g.appendChild(r);
+                g.appendChild(createText(x+10,y+25,'XOR',gateColor,'12')); return g;
+            }
+
+            function createFullAdder(x,y,label) {
+                const g = document.createElementNS(svgNS,'g');
+                const r = document.createElementNS(svgNS,'rect');
+                r.setAttribute('x',x); r.setAttribute('y',y);
+                r.setAttribute('width','80'); r.setAttribute('height','60');
+                r.setAttribute('fill','rgba(0,170,255,0.1)'); r.setAttribute('stroke',gateColor);
+                r.setAttribute('stroke-width','2'); r.setAttribute('rx','5');
+                g.appendChild(r);
+                g.appendChild(createText(x+20,y+30,'FULL',gateColor,'14'));
+                g.appendChild(createText(x+15,y+45,'ADDER',gateColor,'14'));
+                g.appendChild(createText(x+30,y-5,label,lineColor,'12')); return g;
+            }
+
+            svg.appendChild(createText(280,30,'4-Bit Adder-Subtractor (Unsigned & Signed)',lineColor,'18'));
+            svg.appendChild(createText(50,80,'Mode',lineColor,'14'));
+            svg.appendChild(createLine(100,75,950,75));
+
+            svg.appendChild(createText(50,560,'* Same hardware for both unsigned (0–15) and signed (−8 to +7). Only decimal interpretation differs.',textColor,'12'));
+
+            const startY = 120, spacing = 200;
+            for (let i = 0; i < 4; i++) {
+                const x = 100+i*spacing, bitNum = 3-i;
+                svg.appendChild(createText(x+20,startY,`A${bitNum}`,lineColor,'14'));
+                svg.appendChild(createText(x+20,startY+60,`B${bitNum}`,lineColor,'14'));
+                svg.appendChild(createLine(x+50,startY-5,x+50,startY+120));
+                svg.appendChild(createLine(x+50,startY+55,x+90,startY+120));
+                svg.appendChild(createXORGate(x+70,startY+100));
+                svg.appendChild(createLine(x+90,75,x+90,startY+120));
+                svg.appendChild(createLine(x+95,startY+140,x+95,startY+200));
+                svg.appendChild(createFullAdder(x+15,startY+200,`FA${i}`));
+                if (i===0) {
+                    svg.appendChild(createText(x-30,startY+235,'C₀=Mode',textColor,'12'));
+                    svg.appendChild(createLine(x,75,x,startY+230));
+                    svg.appendChild(createLine(x,startY+230,x+15,startY+230));
+                } else {
+                    const prevX = x-spacing;
+                    svg.appendChild(createLine(prevX+95,startY+250,x+15,startY+250));
+                    svg.appendChild(createText(x-50,startY+265,`C${i}`,textColor,'12'));
+                }
+                svg.appendChild(createLine(x+55,startY+260,x+55,startY+320));
+                svg.appendChild(createText(x+40,startY+340,`S${bitNum}`,lineColor,'16'));
+                if (i===3) {
+                    svg.appendChild(createLine(x+95,startY+250,x+150,startY+250));
+                    svg.appendChild(createText(x+110,startY+245,'Carry Out',lineColor,'14'));
+                }
+            }
+
+            svg.appendChild(createText(50,500,'Overflow (signed only) = C₃ XOR C₄',textColor,'16'));
+            svg.appendChild(createText(50,530,'C₃ = Carry into MSB,  C₄ = Carry out of MSB',textColor,'12'));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            calculate();
+            drawCircuit();
+        });
+    </script>
+</body>
+</html>
